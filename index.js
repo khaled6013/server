@@ -6,24 +6,29 @@ const port = 3000
 
 app.use(cors())
 app.use(express.json())
-
-// const users = [
-//   { id: 1, name: 'khaled', email: 'khaled@gmail.com' },
-//   { id: 2, name: 'shihab', email: 'shihab@gmail.com' },
-//   { id: 3, name: 'abdullah', email: 'abdullah@gmail.com' },
-//   { id: 4, name: 'roman', email: 'roman@gmail.com' }
-// ]
+let users = []
 
 app.get('/users', (req, res) => {
   res.json(users)
 })
 
 app.post('/users', (req, res) => {
-    console.log("Post method");
-    const newUser = req.body;
-    newUser.id = users.length + 1;
-    users.push(newUser);
-    res.json(newUser);
+  const newUser = req.body
+  newUser.id = users.length + 1
+  users.push(newUser)
+  res.json(newUser)
+})
+
+app.delete('/users/:id', (req, res) => {
+  const id = parseInt(req.params.id)
+  const index = users.findIndex(user => user.id === id)
+
+  if (index !== -1) {
+    const deletedUser = users.splice(index, 1)
+    res.json(deletedUser[0])
+  } else {
+    res.status(404).json({ message: 'User not found' })
+  }
 })
 
 app.listen(port, () => {
